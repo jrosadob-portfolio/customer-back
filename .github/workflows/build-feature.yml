@@ -17,11 +17,11 @@ jobs:
       - name: Checkout from branch that triggered
         uses: actions/checkout@v3
 
-      - name: setup java ${{ env.java-version }}
+      - name: setup java 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin' # See 'Supported distributions' for available options
-          java-version: ${{ env.java-version }}
+          java-version: '17'
 
       - name: Cache Maven dependencies
         uses: actions/cache@v2
