@@ -1,0 +1,39 @@
+name: build and test feature branch
+on:
+  push:
+    branches:
+      - feature/*
+jobs: 
+  build-feature:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: TEST Actions local
+        run: echo El workflow se ha ejecutado
+
+      #############################################################
+      # 1- Download source code from branch that triggered the workflow, setup java and check that source code is buildable
+      ########################################################
+      - name: Checkout from branch that triggered
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}  
+
+      - name: setup java ${{ env.java-version }}
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: ${{ env.java-version }}
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: build with maven
+        run: |
+          mvn clean test package
+          echo "build with maven"
